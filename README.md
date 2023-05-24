@@ -14,6 +14,28 @@ This API allows to communicates actions from Landscape to subsystems installed o
 
 This project does provides Go and Python bindings from the reference protobuf file by autogenerating them.
 
+## Demo
+
+Quick steps to demo this in python:
+
+``` sh
+$ python3 -m venv venv
+$ . venv/bin/activate
+$ pip install -r demo/requirements.txt
+$ python -m demo.server
+```
+
+Then in another shell:
+
+``` sh
+$ . venv/bin/activate
+$ python -m demo.client
+```
+
+The demo spins up the server and a client. The client sends one message and the server sends two commands, demonstrating the bidirectional streaming RPC. Both sides print what they receive, and the server also prints what it sends.
+
+Kill the server with ctrl-C when you're done.
+
 ## Get involved
 
 This is an [open source](LICENSE) project and we warmly welcome community contributions, suggestions, and constructive feedback. If you're interested in contributing, please take a look at our [Contribution guidelines](CONTRIBUTING.md) first.
