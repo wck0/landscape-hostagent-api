@@ -1,5 +1,5 @@
-from concurrent import futures
-
+import asyncio
+import logging
 import grpc
 
 import hostagent_pb2
@@ -18,9 +18,9 @@ class LandscapeHostAgentServicer(hostagent_pb2_grpc.LandscapeHostAgentServicer):
             )
         ]
 
-    def Connect(self, request_iterator, context):
+    async def Connect(self, request_iterator, context):
         print("Connect request from client")
-        for r in request_iterator:
+        async for r in request_iterator:
             print("Got request")
             print(r)
 
@@ -30,16 +30,17 @@ class LandscapeHostAgentServicer(hostagent_pb2_grpc.LandscapeHostAgentServicer):
             yield c
 
 
-def serve():
-    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+async def serve():
+    server = grpc.aio.server()
     hostagent_pb2_grpc.add_LandscapeHostAgentServicer_to_server(
         LandscapeHostAgentServicer(),
         server,
     )
     server.add_insecure_port("[::]:50051")
-    server.start()
-    server.wait_for_termination()
+    await server.start()
+    await server.wait_for_termination()
 
 
 if __name__ == "__main__":
-    serve()
+    logging.basicConfig(level=logging.INFO)
+    asyncio.run(serve())

@@ -1,16 +1,15 @@
+import asyncio
+import logging
 import grpc
 
 import hostagent_pb2
 import hostagent_pb2_grpc
 
-channel = grpc.insecure_channel("localhost:50051")
-stub = hostagent_pb2_grpc.LandscapeHostAgentStub(channel)
-
 
 def generate_hostagentinfo():
     yield hostagent_pb2.HostAgentInfo(
         token="testprotoken",
-        id="testmachine-testuserid",
+        uid="testmachine-testuserid",
         hostname="testhostname",
         instances=[
             hostagent_pb2.HostAgentInfo.InstanceInfo(
@@ -29,7 +28,18 @@ def generate_hostagentinfo():
     )
 
 
+async def connect(stub):
+    call = stub.Connect(generate_hostagentinfo())
+    async for response in call:
+        print("client received", response)
+
+
+async def run():
+    async with grpc.aio.insecure_channel("localhost:50051") as channel:
+        stub = hostagent_pb2_grpc.LandscapeHostAgentStub(channel)
+        await connect(stub)
+
+
 if __name__ == "__main__":
-    for received_command in stub.Connect(generate_hostagentinfo()):
-        print("Recieved command")
-        print(received_command)
+    logging.basicConfig(level=logging.INFO)
+    asyncio.run(run())

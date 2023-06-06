@@ -3,3 +3,5 @@ go.work
 
 # Python compiled bindings
 __pycache__/
+
+venv
