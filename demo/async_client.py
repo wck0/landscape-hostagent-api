@@ -52,7 +52,9 @@ class FakeHostAgentClient:
     async def run(self):
         print(f"Starting client {self.uid}")
         async with grpc.aio.insecure_channel(
-            "localhost:50051", options=self.prepare_channel_options()
+            "10.117.1.114:50051", options=self.prepare_channel_options()
+            # "10.117.1.158:50051", options=self.prepare_channel_options()
+            # "10.117.1.100:50051", options=self.prepare_channel_options()
         ) as channel:
             await channel.channel_ready()
             self.stub = hostagent_pb2_grpc.LandscapeHostAgentStub(channel)
